@@ -2,43 +2,33 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
-	"os"
-
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func InitDatabase(dotenvPath string) (*sql.DB, error) {
-    err := godotenv.Load(dotenvPath)
-    if err != nil {return nil, err}
+	err := godotenv.Load(dotenvPath)
+	if err != nil {
+		return nil, err
+	}
 
-    dbUser := os.Getenv("DB_USER")
-    dbPass := os.Getenv("DB_PASS")
-    dbName := os.Getenv("DB_NAME")
-    dbURL := fmt.Sprintf("%s:%s@/", dbUser, dbPass)
+	//dbUser := os.Getenv("DB_USER")
+	//dbPass := os.Getenv("DB_PASS")
+	//dbName := os.Getenv("DB_NAME")
+	//
+	//dbURL := fmt.Sprintf("postgresql://%s:%s@localhost:5432/gotham?sslmode=disable", dbUser, dbPass)
 
-    db, err := sql.Open("mysql", dbURL)
-    if err != nil {return nil, err}
+	//connStr := "user=postgres dbname=gotham password= sslmode=disable"
 
-    // Check if the database exists
-    rows, err := db.Query("SHOW DATABASES LIKE " + fmt.Sprintf(`"%s"`, dbName))
-    if err != nil {return nil, err}
-    defer rows.Close()
+	db, err := sql.Open("postgres", "postgres://postgres:1234@localhost/postgres?sslmode=disable")
 
-    if !rows.Next() {
-        // Create the database if it doesn't exist
-        _, err := db.Exec("CREATE DATABASE " + dbName)
-        if err != nil {return nil, err}
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    // Close the current connection and reconnect to the specific database
-    db.Close()
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
 
-    dbURLWithDbName:= fmt.Sprintf("%s:%s@/%s", dbUser, dbPass, dbName)
-    db, err = sql.Open("mysql", dbURLWithDbName)
-    if err != nil {return nil, err}
-
-    return db, nil
+	return db, nil
 }
-

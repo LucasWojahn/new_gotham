@@ -4,8 +4,8 @@ build:
 run: tailwindcss templ build
 	./bin/app
 
-test:
-	go test -v ./... -count=1 
+#test:
+#	go test -v ./... -count=1
 
 
 tailwindcss:

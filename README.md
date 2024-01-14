@@ -44,7 +44,7 @@ git clone https://github.com/morethancoder/new_gotham
 * make sure your mariadb server is running.
 * create a .env file inside the project directory, and fill database credentials:
 ```bash
-cd new_project && mv dotenv .env
+cd new_project && mv .env .env
 ```
 * make it yours, edit go.mod module name (optional):
 ```bash
